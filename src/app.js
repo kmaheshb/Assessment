@@ -10,28 +10,12 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            features : []
-        }
-
         this.props.fetchAllFeatures();
     }
 
-    static getDerivedStateFromProps(props, state) {
-        
-        if (props.featureFlags !== state.features) {
-            return {
-                features: props.featureFlags,
-            };
-        }
-    
-        // Return null if the state hasn't changed
-        return null;
-    }
-
     render() {
-        const features = this.state.features.length > 0 ? this.state.features.map((feature, ind) => {
-            return (<Feature featureName={feature.displayName} values={feature.value} key={ind} />)
+        const features = this.props.featureFlags.length > 0 ? this.props.featureFlags.map((feature, ind) => {
+            return (<Feature featureName={feature.name} featureDisplayName={feature.displayName} values={feature.value} key={ind} />)
         }) : null;
 
         const isFetching = this.props.isFetching ? <span>Fetching...</span> : <span></span>;
