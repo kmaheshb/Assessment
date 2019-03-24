@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Feature from './components/Feature';
+
+import { fetchAllFeatures, resetFeatures } from './actions/featureActions';
 
 class App extends Component {
 
@@ -7,41 +10,44 @@ class App extends Component {
         super(props);
 
         this.state = {
-            features : [
-                { 
-                    name : "useAwesomeGames",
-                    value : [
-                        {name:"Asia", isActive:true}, 
-                        {name:"Korea", isActive:false}, 
-                        {name:"Europe", isActive:false}, 
-                        {name:"Japan", isActive:false}, 
-                        {name:"America", isActive:true}
-                    ]
-                },
-                { 
-                    name : "Identity_Information",
-                    value : [
-                        {name:"Asia", isActive:false}, 
-                        {name:"Korea", isActive:false}, 
-                        {name:"Europe", isActive:false}, 
-                        {name:"Japan", isActive:true}, 
-                        {name:"America", isActive:true}
-                    ]
-                }
-            ]
+            features : []
         }
+
+        this.props.fetchAllFeatures();
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        
+        if (props.featureFlags !== state.features) {
+            return {
+                features: props.featureFlags,
+            };
+        }
+    
+        // Return null if the state hasn't changed
+        return null;
+    }
+
+    handleSave = () => {
+        console.log("Save");
     }
 
     render() {
-        const features = this.state.features.map((feature, ind) => {
+        const features = this.state.features.length > 0 ? this.state.features.map((feature, ind) => {
             return (<Feature featureName={feature.name} values={feature.value} key={ind} />)
-        })
+        }) : null;
         return (
             <div>
                 {features}
+                <button type="button" onClick={this.handleSave}>Save</button>
+                <button type="button" onClick={this.props.resetFeatures}>Reset</button>
             </div>
-        );
+        )
     }
 }
 
-export default App;
+const mapStateToProps = state => ({
+    featureFlags :  state.Features.features.list
+})
+
+export default connect(mapStateToProps, { fetchAllFeatures, resetFeatures })(App);
