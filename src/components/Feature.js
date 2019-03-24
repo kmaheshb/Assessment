@@ -34,31 +34,42 @@ class Feature extends Component {
     render() {
         console.log("Render");
         const regi = this.props.values.map((flag, ind) => {
-            return(<th key={ind}>{flag.region}</th>)
+            return(<th className="left-align min-width-50" key={ind}>{flag.region}</th>)
         })
         const values = this.props.values.map((flag, ind) => {
-            return(<td key={ind}><input name={ind} type="checkbox" checked={flag.active} onChange={this.handleInputChange} />{flag.active}</td>)
+            return(<td className="left-align min-width-50" key={ind}><input name={ind} type="checkbox" checked={flag.active} onChange={this.handleInputChange} />{flag.active}</td>)
             
         })
         return (
             <div>
-                <table className="bp3-html-table">
-                    <thead>
-                        <tr>
-                            <th  className="bg-table-head" colSpan={this.props.values.length}>{this.props.featureName}</th>
-                        </tr>
-                        <tr>
-                            {regi}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            {values}
-                        </tr>  
-                    </tbody>                  
-                </table>
-                <button type="button" onClick={this.handleSave}>Save</button>
-                <button type="button" onClick={this.handleReset}>Reset</button>
+                <div className="rounded-box">
+                    <table className="bp3-html-table">
+                        <thead>
+                            <tr>
+                                <th className="bg-table-head left-align" colSpan={this.props.values.length + 1}>{this.props.featureName}</th>
+                            </tr>
+                            <tr>
+                                <th className="left-align min-width-150">Region</th>
+                                {regi}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td className="left-align min-width-150">Status</td> 
+                                {values}
+                            </tr>
+                            <tr>
+                                <td className="right-align" colSpan={this.props.values.length + 1}>
+                                    <button type="button" onClick={this.handleSave}>Save</button> 
+                                    <div className="divider"></div>
+                                    <button type="button" onClick={this.handleReset}>Reset</button>
+                                </td>
+                            </tr>
+                        </tbody>                  
+                    </table>
+                    
+                    
+                </div>
             </div>
         );
     }

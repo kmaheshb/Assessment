@@ -1,3 +1,33 @@
 .bg-table-head {
     background-color: blue;
 }
+
+.left-align {
+    text-align: left
+}
+
+.right-align {
+    text-align: right
+}
+
+.min-width-150 {
+    min-width: 150px;
+}
+
+.min-width-50 {
+    min-width: 50px;
+}
+
+.rounded-box {
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    display: inline-block
+}
+
+.divider{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
