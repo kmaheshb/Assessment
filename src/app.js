@@ -31,7 +31,7 @@ class App extends Component {
 
     render() {
         const features = this.state.features.length > 0 ? this.state.features.map((feature, ind) => {
-            return (<Feature featureName={feature.name} values={feature.value} key={ind} />)
+            return (<Feature featureName={feature.displayName} values={feature.value} key={ind} />)
         }) : null;
 
         const isFetching = this.props.isFetching ? <span>Fetching...</span> : <span></span>;
