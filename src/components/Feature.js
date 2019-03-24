@@ -1,31 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { updateFeature } from '../actions/featureActions';
+import { updateFeature, saveFeatureFlag, resetFeatures } from '../actions/featureActions';
 
 class Feature extends Component {    
 
-    constructor(props) {
-        super(props)
-        this.state = {
-            flags : this.props
-        }
-    }
-
-    static getDerivedStateFromProps(props, state) {
-        console.log("DS");
-        if (props.values !== state.flags) {
-          return {
-            flags: props.values,
-          };
-        }
-    
-        // Return null if the state hasn't changed
-        return null;
-    }
-
     handleInputChange = (e) => {
         console.log(e.target);
-        var newFlags = this.state.flags.map((flag, i) => {
+        var newFlags = this.props.values.map((flag, i) => {
             if (i === Number.parseInt(e.target.name))
                 return { "region" : flag.region, "active" : !flag.active }
             return flag
@@ -38,33 +19,49 @@ class Feature extends Component {
         })
     }
 
+    handleSave = () => {
+        
+        this.props.saveFeatureFlag({
+            name: this.props.featureName,
+            value: this.props.values
+        });
+    }
+
+    handleReset = () => {
+        this.props.resetFeatures(this.props.featureName);
+    }
+
     render() {
         console.log("Render");
-        const regi = this.state.flags.map((flag, ind) => {
+        const regi = this.props.values.map((flag, ind) => {
             return(<th key={ind}>{flag.region}</th>)
         })
-        const values = this.state.flags.map((flag, ind) => {
+        const values = this.props.values.map((flag, ind) => {
             return(<td key={ind}><input name={ind} type="checkbox" checked={flag.active} onChange={this.handleInputChange} />{flag.active}</td>)
             
         })
         return (
             <div>
-                {this.props.featureName}
                 <table className="bp3-html-table">
                     <thead>
-                    <tr>
-                        {regi}
-                    </tr>
+                        <tr>
+                            <th  className="bg-table-head" colSpan={this.props.values.length}>{this.props.featureName}</th>
+                        </tr>
+                        <tr>
+                            {regi}
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        {values}
-                    </tr>  
+                        <tr>
+                            {values}
+                        </tr>  
                     </tbody>                  
                 </table>
+                <button type="button" onClick={this.handleSave}>Save</button>
+                <button type="button" onClick={this.handleReset}>Reset</button>
             </div>
         );
     }
 }
 
-export default connect(null, { updateFeature })(Feature);
+export default connect(null, { updateFeature, saveFeatureFlag, resetFeatures })(Feature);

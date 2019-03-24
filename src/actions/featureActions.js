@@ -51,45 +51,45 @@ export const fetchAllFeatures = () => dispatch => {
     })
 }
 
-export const saveFeatureFlags = () => dispatch => {
+export const saveFeatureFlag = (feature) => dispatch => {
 
     dispatch({
         type: SAVE_FEATURES_BEGIN,
         payload: []
     })
 
-    fetch(HOST_SERVER + "AllAlertRestStatus", {
+    fetch(HOST_SERVER + "v1/feature", {
         method: "POST",
         headers: { 
-            "Access-Control-Allow-Origin": "http://localhost:8080" ,
-            "Access-Control-Allow-Methods" : "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers" : "Origin, Content-Type, X-Auth-Token",
-            "Accept": "application/json"
-        }
+            "Access-Control-Allow-Origin": "http://localhost:8090",
+            "Accept": "application/json",
+            "Content-Type" : "application/json"
+        },
+        body: JSON.stringify(feature)
     })
     .then(response =>{
         if (response.ok)
             return response;
         else {
             dispatch({
-            type: FETCH_ALERTS_ERROR,
+            type: SAVE_FEATURES_ERROR,
             payload: []
             })
         }
     })
     .then(res => res.json())
-    .then(alerts => {
-        if (alerts.allAlertStatusList !== undefined)
+    .then(featureFlags => {
+        if (featureFlags.listOfFeatures !== undefined)
             dispatch({
-            type: FETCH_ALERTS_SUCCESS,
-            payload: alerts.allAlertStatusList
+            type: SAVE_FEATURES_SUCCESS,
+            payload: featureFlags.listOfFeatures
             })
         }
     )
     .catch(err => {
         console.log(err)
         dispatch({
-        type: FETCH_ALERTS_ERROR,
+        type: SAVE_FEATURES_ERROR,
         payload: []
         })
     })
@@ -102,9 +102,9 @@ export const updateFeature = (update) => dispatch => {
     })
 }
 
-export const resetFeatures = () => dispatch => {
+export const resetFeatures = (featureName) => dispatch => {
     dispatch({
         type: RESET_FEATURES,
-        payload: null
+        payload: featureName
     })
 }

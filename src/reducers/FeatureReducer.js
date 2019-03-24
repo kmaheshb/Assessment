@@ -14,7 +14,8 @@ const initialState = {
     features : {
         list: [],
         default: [],
-        isFetching: false
+        isFetching: false,
+        isSaving: false,
     }
 }
 
@@ -23,6 +24,17 @@ const updateFeature = (features, update) => {
     features.map(f => {
         if (f.name === update.name)
             newFeatures.push(Object.assign( {}, update))
+        else
+            newFeatures.push(Object.assign( {}, f))
+    })
+    return newFeatures;
+}
+
+const resetFeature = (currentFeatures, defaultFeatures, featureName) => {
+    var newFeatures = [];
+    currentFeatures.map(f => {
+        if (f.name === featureName)
+            newFeatures.push(Object.assign( {}, defaultFeatures.find(x=> x.name === featureName)))
         else
             newFeatures.push(Object.assign( {}, f))
     })
@@ -40,11 +52,20 @@ const FeatureReducer = (state = initialState, action) => {
         case FETCH_ALL_FEATURES_ERROR:
             return { ...state, features: { ...state.features, isFetching: true }};
 
+        case SAVE_FEATURES_BEGIN:
+            return { ...state, features: { ...state.features, isSaving: true }};
+
+        case SAVE_FEATURES_SUCCESS:
+            return { ...state, features: { ...state.features, list: action.payload, default: action.payload, isSaving: false }}
+
+        case SAVE_FEATURES_ERROR:
+            return { ...state, features: { ...state.features, isSaving: false }};
+
         case UPDATE_FEATURE:
             return { ...state, features: { ...state.features, list: updateFeature(state.features.list, action.payload) }}
         
         case RESET_FEATURES:
-            return { ...state, features: { ...state.features, list: state.features.default }}
+            return { ...state, features: { ...state.features, list: resetFeature(state.features.list, state.features.default, action.payload) }}
 
         default:
             return state;

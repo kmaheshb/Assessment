@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Feature from './components/Feature';
+import style from "./css/main.css";
 
-import { fetchAllFeatures, resetFeatures } from './actions/featureActions';
+import { fetchAllFeatures, saveFeatureFlags, resetFeatures } from './actions/featureActions';
 
 class App extends Component {
 
@@ -28,26 +29,29 @@ class App extends Component {
         return null;
     }
 
-    handleSave = () => {
-        console.log("Save");
-    }
-
     render() {
         const features = this.state.features.length > 0 ? this.state.features.map((feature, ind) => {
             return (<Feature featureName={feature.name} values={feature.value} key={ind} />)
         }) : null;
+
+        const isFetching = this.props.isFetching ? <span>Fetching...</span> : <span></span>;
+        const isSaving = this.props.isSaving ? <span>Saving...</span> : <span></span>; 
+
         return (
             <div>
+                {isFetching}
+                {isSaving}
+                <br />
                 {features}
-                <button type="button" onClick={this.handleSave}>Save</button>
-                <button type="button" onClick={this.props.resetFeatures}>Reset</button>
             </div>
         )
     }
 }
 
 const mapStateToProps = state => ({
-    featureFlags :  state.Features.features.list
+    featureFlags :  state.Features.features.list,
+    isFetching : state.Features.features.isFetching,
+    isSaving: state.Features.features.isSaving 
 })
 
-export default connect(mapStateToProps, { fetchAllFeatures, resetFeatures })(App);
+export default connect(mapStateToProps, { fetchAllFeatures })(App);
